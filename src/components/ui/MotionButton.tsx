@@ -1,14 +1,20 @@
 "use client";
 
-import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
-import { ButtonHTMLAttributes } from "react";
+import { ComponentPropsWithoutRef, ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
 
-interface MotionButtonProps
-  extends ButtonHTMLAttributes<HTMLButtonElement> {
+type MotionButtonProps = Omit<
+  ComponentPropsWithoutRef<"button">,
+  "onAnimationStart" |
+  "onDragStart" |
+  "onDrag" |
+  "onDragEnd"
+> & {
+  children: ReactNode;
   variant?: "primary" | "outline";
-}
+};
 
 
 export function MotionButton({
@@ -18,20 +24,27 @@ export function MotionButton({
   ...props
 }: MotionButtonProps) {
 
+
   return (
+
     <motion.button
+
       {...props}
+
       whileHover={{
         scale: 1.05,
       }}
+
       whileTap={{
         scale: 0.96,
       }}
+
       transition={{
         type: "spring",
         stiffness: 400,
         damping: 17,
       }}
+
       className={cn(
         `
         group
@@ -45,6 +58,7 @@ export function MotionButton({
         font-medium
         transition-colors
         `,
+
         variant === "primary" &&
           `
           bg-primary
@@ -61,8 +75,12 @@ export function MotionButton({
 
         className
       )}
+
     >
+
       {children}
+
     </motion.button>
+
   );
 }
