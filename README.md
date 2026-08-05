@@ -1,10 +1,5 @@
 # 🚀 Gabriel Bitencourt - Portfolio
 
-<p align="center">
-  <img src="./public/preview.png" alt="Portfolio Preview" />
-</p>
-
-
 <h3 align="center">
   Meu portfólio pessoal desenvolvido para apresentar meus projetos,
   habilidades e trajetória como Software Engineer.
