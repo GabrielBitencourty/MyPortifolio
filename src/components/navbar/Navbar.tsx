@@ -1,294 +1,124 @@
 "use client";
 
-import { useState } from "react";
-import { Menu, X } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { Download } from "lucide-react";
 
-import { useActiveSection } from "@/hooks/useActiveSection";
-
-
-function scrollToSection(id: string) {
-  const element = document.getElementById(id);
-
-  if (element) {
-
-    const navbarHeight = 80;
-
-    const elementPosition =
-      element.offsetTop - navbarHeight;
-
-
-    window.scrollTo({
-      top: elementPosition,
-      behavior: "smooth",
-    });
-
-  }
-}
-
-
-const links = [
-  {
-    id: "about",
-    name: "Sobre",
-  },
-  {
-    id: "projects",
-    name: "Projetos",
-  },
-  {
-    id: "skills",
-    name: "Skills",
-  },
-  {
-    id: "contact",
-    name: "Contato",
-  },
+const navItems = [
+  { name: "Início", id: "home" },
+  { name: "Sobre", id: "about" },
+  { name: "Projetos", id: "projects" },
+  { name: "Habilidades", id: "skills" },
+  { name: "Contato", id: "contact" },
 ];
 
-
 export function Navbar() {
+  const [activeSection, setActiveSection] = useState("home");
 
-  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + 300; 
 
+      for (const item of navItems) {
+        const element = document.getElementById(item.id);
+        if (element) {
+          const top = element.offsetTop;
+          const height = element.offsetHeight;
 
-  const activeSection = useActiveSection([
-    "home",
-    "about",
-    "projects",
-    "skills",
-    "contact",
-  ]);
+          if (scrollPosition >= top && scrollPosition < top + height) {
+            setActiveSection(item.id);
+            break;
+          }
+        }
+      }
+    };
 
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
-  function handleNavigate(id:string){
+  const handleSmoothScroll = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    e.preventDefault(); 
+    setActiveSection(id);
 
-    scrollToSection(id);
-    setOpen(false);
-
-  }
-
+    const targetElement = document.getElementById(id);
+    if (targetElement) {
+      targetElement.scrollIntoView({
+        behavior: "smooth", 
+        block: "start",
+      });
+    }
+  };
 
   return (
-
-    <header
-      className="
-        fixed
-        top-0
-        left-0
-        z-50
-        w-full
-      "
-    >
-
-      <nav
-        className="
-          flex
-          items-center
-          sm:justify-around
-          justify-between
-          bg-card/70
-          backdrop-blur-xl
-          px-6
-          py-4
-          shadow-[0_8px_30px_rgb(0,0,0,0.04)]
-        "
-      >
-
-        <button
-          onClick={() => scrollToSection("home")}
-          className="
-            text-xl
-            font-bold
-            cursor-pointer
-            tracking-tight
-          "
-        >
-          Gabriel Bitencourt
-          <span className="text-primary">
-            .
-          </span>
-
-        </button>
-
-
-        <div
-          className="
-            hidden
-            md:flex
-            items-center
-            gap-8
-            text-sm
-            font-bold
-            text-muted-foreground
-          "
-        >
-
-          {links.map((link)=>(
-
-            <button
-              key={link.id}
-              onClick={() => scrollToSection(link.id)}
-              className={`
-                cursor-pointer
-                transition-colors
-                ${
-                  activeSection === link.id
-                  ? "text-primary"
-                  : ""
-                }
-              `}
-            >
-
-              {link.name}
-
-            </button>
-
-          ))}
-
-
+    <header className="fixed top-0 left-0 z-50 w-full border-b border-zinc-900 bg-[#0A0A0A]/80 backdrop-blur-md px-6 py-4">
+      <div className="mx-auto flex max-w-7xl items-center justify-between">
+        
+        <div className="flex items-center gap-2 font-black text-white text-lg">
+          <span className="text-[#00FF44]">&lt;/&gt;</span>
+          Gabriel Bitencourt<span className="text-[#00FF44]">.</span>
         </div>
 
-        <button
-          onClick={() => setOpen(true)}
-          className="
-            text-primary
-            md:hidden
-          "
-        >
-          <Menu size={30}/>
-        </button>
-      </nav>
-
-      <AnimatePresence>
-
-        {open && (
-
-          <>
-
-            <motion.div
-              initial={{
-                opacity:0,
-              }}
-
-              animate={{
-                opacity:1,
-              }}
-
-              exit={{
-                opacity:0,
-              }}
-
-              onClick={() => setOpen(false)}
-
-              className="
-                fixed
-                inset-0
-                z-40
-                bg-black/40
-                backdrop-blur-sm
-                md:hidden
-              "
-            />
-
-            <motion.aside
-
-                initial={{
-                 translateX: "100%",
-                        }}
-                
-                animate={{
-                  translateX: "0%",
-                        }}
-                
-                exit={{
-                  translateX: "100%",
-                        }}
-                
-                transition={{
-                  type: "spring",
-                  damping: 25,
-                  stiffness: 250,
-                }}
-
-              className="
-                fixed
-                right-0
-                top-0
-                z-50
-                flex
-                h-screen
-                w-[85%]
-                max-w-sm
-                flex-col
-                justify-center
-                bg-card
-                shadow-2xl
-                md:hidden
-              "
-            >
-
-
-              <button
-                onClick={() => setOpen(false)}
-                className="
-                  absolute
-                  right-6
-                  top-6
-                  text-primary
-                "
+        <nav className="hidden md:flex items-center gap-6">
+          {navItems.map((item) => {
+            const isActive = activeSection === item.id;
+            
+            return (
+              <a
+                key={item.id}
+                href={`#${item.id}`}
+                onClick={(e) => handleSmoothScroll(e, item.id)}
+                className={`relative text-sm font-medium transition-colors duration-400 py-1 ${
+                  isActive ? "text-white" : "text-zinc-400 hover:text-zinc-200"
+                }`}
               >
-                <X size={30}/>
-              </button>
+                {item.name}
+                
+                {isActive && (
+                  <motion.div
+                    layoutId="activeNavLine"
+                    className="absolute bottom-0 left-0 h-[2px] w-full bg-[#00FF44]"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
+              </a>
+            );
+          })}
+        </nav>
 
-
-
-              <div
-                className="
-                  flex
-                  flex-col
-                  items-center
-                  gap-8
-                "
-              >
-
-                {links.map((link)=>(
-
-                  <button
-                    key={link.id}
-                    onClick={() => handleNavigate(link.id)}
-                    className={`
-                      text-3xl
-                      font-bold
-                      transition-all
-                      ${
-                        activeSection === link.id
-                        ? "text-primary"
-                        : "text-foreground"
-                      }
-                    `}
-                  >
-
-                    {link.name}
-
-                  </button>
-
-                ))}
-
-
-              </div>
-
-
-            </motion.aside>
-
-          </>
-
-        )}
-
-      </AnimatePresence>
-
-
+        <motion.a
+            href="/Gabriel_Bitencourt.pdf" 
+            download="Gabriel_Bitencourt_CV.pdf" 
+            whileHover={{ scale: 1.02, y: -1 }}
+            whileTap={{ scale: 0.98 }}
+            className="
+              flex 
+              items-center 
+              gap-2 
+              rounded-xl 
+              bg-[#00FF44] 
+              px-4 
+              py-2.5 
+              text-xs 
+              font-extrabold 
+              text-black 
+              border 
+              border-transparent
+              transition-all 
+              duration-300 
+              ease-out
+              shadow-[0_0_15px_rgba(0,255,68,0.15)]
+              cursor-pointer
+              hover:bg-transparent 
+              hover:text-[#00FF44] 
+              hover:border-[#00FF44] 
+              hover:shadow-[0_0_20px_rgba(0,255,68,0.35)]
+            "
+          >
+            <Download size={14} className="transition-colors duration-300" />
+            Baixar currículo
+          </motion.a>
+      </div>
     </header>
-
   );
 }
