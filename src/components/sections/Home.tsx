@@ -37,7 +37,7 @@ const socialLinks = [
   },
   {
     name: "E-mail",
-    href: "gb750779@gmail.com",
+    href: "mailto:gb750779@gmail.com",
     icon: Mail,
   },
   {
@@ -105,9 +105,19 @@ export function Hero() {
           <div className="mt-9 flex flex-wrap items-center gap-4">
             <motion.a
               href="#projects"
+              onClick={(e) => {
+                e.preventDefault();
+                const targetElement = document.getElementById("projects");
+                if (targetElement) {
+                  targetElement.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                  });
+                }
+              }}
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.97 }}
-              className="group inline-flex min-h-13 items-center gap-3 rounded-full bg-[#39ff14] px-6 py-3.5 font-semibold text-[#071006] transition-colors hover:bg-[#65ff49]"
+              className="group inline-flex min-h-13 items-center gap-3 rounded-full bg-[#39ff14] px-6 py-3.5 font-semibold text-[#071006] transition-colors hover:bg-[#65ff49] cursor-pointer"
             >
               <ArrowRight
                 size={20}
