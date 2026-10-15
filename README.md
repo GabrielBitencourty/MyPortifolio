@@ -20,8 +20,7 @@ boas práticas de desenvolvimento frontend.
 
 ## 🖥️ Preview
 
-![Portfolio Preview](./public/preview.png)
-
+<img width="1900" height="906" alt="image" src="https://github.com/user-attachments/assets/8d1b7a9d-3425-4578-84ab-c1ccb3babe70" />
 
 ## 🚀 Tecnologias utilizadas
 
